@@ -2,22 +2,50 @@
   "name": "yap_assignment",
   "version": "1.0.0",
   "description": "A sample Yap project",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "main": "app.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rashg05/yap_assignment.git"
   },
-  "author": "",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/rashg05/yap_assignment/issues"
   },
-  "homepage": "https://github.com/rashg05/yap_assignment#readme",
-  "keywords": [],
+  "private": true,
+  "scripts": {
+    "start": "node ./src/app.js",
+    "dev": "nodemon ./src/app.js",
+    "build": "npm install --production --silent",
+    "test": "nyc --reporter=lcovonly --report-dir=reports mocha -t 20000 ./test --exit",
+    "lint": "eslint ./src",
+    "lintfix": "eslint ./src --fix"
+  },
   "dependencies": {
-    "express": "^4.18.2"
+    "@sentry/node": "^7.21.1",
+    "@sentry/tracing": "^7.21.1",
+    "@yapsody/lib-event-publisher": "^1.2.54",
+    "@yapsody/lib-handlers": "^1.0.56",
+    "@yapsody/lib-middlewares": "^1.0.37",
+    "@yapsody/lib-utils": "^1.0.27",
+    "@yapsody/lib-validations": "^2.0.10",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dd-trace": "^3.8.0",
+    "express": "^4.18.2",
+    "helmet": "^5.1.1",
+    "joi": "^17.7.0",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.25.8"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "chai-http": "^4.3.0",
+    "dotenv": "^16.0.3",
+    "eslint": "^8.28.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "mocha": "^10.1.0",
+    "mocha-junit-reporter": "^2.2.0",
+    "nodemon": "^2.0.20",
+    "nyc": "^15.1.0"
   }
 }
