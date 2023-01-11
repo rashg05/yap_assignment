@@ -18,9 +18,9 @@ const parseHeaders = middlewares.header.parser({
 
 const apiRoutes = express.Router();
 
-const noteRoutes = require('./note.routes');
+const userRoutes = require('./user.routes');
 
-apiRoutes.use('/notes', [validateHeaders, parseHeaders, noteRoutes]);
+apiRoutes.use('/users', [validateHeaders, parseHeaders, userRoutes]);
 
 apiRoutes.use('*', () => error.throwNotFound({ item: 'Route' }));
 

@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const {
-  note,
+  user,
 } = require('../models');
 const config = require('../config');
 
@@ -22,9 +22,9 @@ const sequelize = new Sequelize(config.MYSQL_DB_NAME, config.MYSQL_USERNAME, con
   },
 });
 
-const NoteModel = note(sequelize, Sequelize);
+const UserModel = user(sequelize, Sequelize);
 
 module.exports = {
   sequelize,
-  NoteModel,
+  UserModel,
 };

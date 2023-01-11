@@ -5,8 +5,8 @@ if (process.env.ENVIRONMENT === 'yap-local') {
   
   const config = {
     ENVIRONMENT: process.env.ENVIRONMENT || 'yap-local',
-    MICROSERVICE_NAME: process.env.MICROSERVICE_NAME || 'nodejs-boilerplate',
-    MICROSERVICE_TYPE: process.env.MICROSERVICE_TYPE || 'com.yapsody.nodejs-boilerplate',
+    MICROSERVICE_NAME: process.env.MICROSERVICE_NAME || 'crudjs-assignment',
+    MICROSERVICE_TYPE: process.env.MICROSERVICE_TYPE || 'com.yapsody.crud_assignment',
     MICROSERVICE_IP: process.env.MICROSERVICE_IP || '0.0.0.0',
     APP_HOST: process.env.APP_HOST || '0.0.0.0',
     APP_PORT: process.env.APP_PORT || '8080',
@@ -14,7 +14,7 @@ if (process.env.ENVIRONMENT === 'yap-local') {
     MYSQL_HOST: process.env.MYSQL_HOST || '0.0.0.0',
     MYSQL_USERNAME: process.env.MYSQL_USERNAME || 'root',
     MYSQL_PASSWORD: process.env.MYSQL_PASSWORD || 'root',
-    MYSQL_DB_NAME: process.env.MYSQL_DB_NAME || 'notes',
+    MYSQL_DB_NAME: process.env.MYSQL_DB_NAME || 'users',
     MYSQL_PORT: process.env.MYSQL_PORT || 3306,
   };
   
