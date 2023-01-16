@@ -1,40 +1,12 @@
-if (process.env.ENVIRONMENT !== 'yap-local') {
-  // eslint-disable-next-line import/no-unresolved,no-unused-vars,global-require
-  const tracer = require('dd-trace').init();
-  tracer.use('http', {
-    blocklist: ['/'],
-  });
-}
-
 const express = require('express');
 const compression = require('compression');
 const helmet = require('helmet');
 const cors = require('cors');
 const { error } = require('@yapsody/lib-handlers');
-const Sentry = require('@sentry/node');
-const Tracing = require('@sentry/tracing');
 const config = require('./config');
 const apiRoutes = require('./routes');
 
 const app = express();
-const enableSentry = (process.env.ENVIRONMENT !== 'yap-local' && config.SENTRY_PROJECT_DSN.length !== 0);
-if (enableSentry) {
-  Sentry.init({
-    dsn: config.SENTRY_PROJECT_DSN,
-    environment: config.ENVIRONMENT,
-    integrations: [
-      new Sentry.Integrations.Http({ tracing: true }),
-      new Tracing.Integrations.Express({ app }),
-    ],
-    tracesSampleRate: 0.02,
-    sampleRate: 1.0,
-    denyUrls: [
-      '/',
-    ],
-  });
-  app.use(Sentry.Handlers.requestHandler());
-  app.use(Sentry.Handlers.tracingHandler());
-}
 
 app.use(cors());
 app.use(helmet());
@@ -47,8 +19,6 @@ app.get('/', (req, res) => {
 
 // use routes
 app.use(apiRoutes);
-
-if (enableSentry) { app.use(Sentry.Handlers.errorHandler()); }
 
 // global error handler
 app.use(error.handler);

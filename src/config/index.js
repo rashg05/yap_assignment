@@ -13,7 +13,7 @@ if (process.env.ENVIRONMENT === 'yap-local') {
     SENTRY_PROJECT_DSN: process.env.SENTRY_PROJECT_DSN || '',
     MYSQL_HOST: process.env.MYSQL_HOST || '0.0.0.0',
     MYSQL_USERNAME: process.env.MYSQL_USERNAME || 'root',
-    MYSQL_PASSWORD: process.env.MYSQL_PASSWORD || 'root',
+    MYSQL_PASSWORD: process.env.MYSQL_PASSWORD || 'rootroot',
     MYSQL_DB_NAME: process.env.MYSQL_DB_NAME || 'users',
     MYSQL_PORT: process.env.MYSQL_PORT || 3306,
   };

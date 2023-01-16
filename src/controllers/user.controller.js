@@ -26,6 +26,7 @@ const addOne = async (req, res, next) => {
     });
     return success.handler({ user }, req, res, next);
   } catch (err) {
+    console.error(err);
     switch (err.name) {
       case 'SequelizeUniqueConstraintError':
         err.custom_key = 'UserConflict';
