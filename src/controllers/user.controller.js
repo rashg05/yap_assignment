@@ -1,22 +1,39 @@
 /* eslint-disable no-shadow */
-const { error, success } = require('@yapsody/lib-handlers');
-const config = require('../config/user.config.json');
-const {
-  addUserValidation,
-} = require('../validations');
-const { userService } = require('../services');
+const { error, success } = require("@yapsody/lib-handlers");
+const config = require("../config/user.config.json");
+const { addUserValidation, getListValidation } = require("../validations");
+const { userService } = require("../services");
+const userModel = require("../models/user.model");
+const { UserModel } = require("../managers/sequelize.manager");
 
-const getConfig = async (req, res, next) => success.handler({ config }, req, res, next);
+const getListCount = async (req, res, next) => {
+  const reqData = { ...req.query };
+  if (reqData.ids) {
+    reqData.ids = reqData.ids.split(";");
+  }
+  try {
+    const { search } = await getListValidation.validateAsync(
+      reqData
+    );
+
+    const count = await userService.getListCount({
+      search,
+    });
+    return success.handler({ count }, req, res, next);
+  } catch (err) {
+    return error.handler(err, req, res, next);
+  }
+};
+// const getListCount = async (req, res) => {
+//   const user = await userService.getListCount({})
+//   res.status(200).json({data: user})
+// }
 
 const addOne = async (req, res, next) => {
   const reqBody = req.body;
   try {
-    const {
-      firstname,
-      lastname,
-      emailid,
-      password,
-    } = await addUserValidation.validateAsync(reqBody);
+    const { firstname, lastname, emailid, password } =
+      await addUserValidation.validateAsync(reqBody);
 
     const user = await userService.addOne({
       firstname,
@@ -28,8 +45,8 @@ const addOne = async (req, res, next) => {
   } catch (err) {
     console.error(err);
     switch (err.name) {
-      case 'SequelizeUniqueConstraintError':
-        err.custom_key = 'UserConflict';
+      case "SequelizeUniqueConstraintError":
+        err.custom_key = "UserConflict";
         err.message = `User with name ${req.body.name} already exists`;
         break;
       default:
@@ -39,7 +56,39 @@ const addOne = async (req, res, next) => {
   }
 };
 
+const getConfig = async (req, res, next) =>
+  success.handler({ config }, req, res, next);
+
+const getList = async (req, res, next) => {
+  const reqData = { ...req.query };
+  let id = req.params.id;
+  let user = await userModel.findOne({where: { id: id}});
+  res.status(200).send(user);
+
+  if (reqData.ids) {
+    reqData.ids = reqData.ids.split(";");
+  }
+  try {
+    const { page_no, page_size, sort_by, sort_order, search } =
+      await getListValidation.validateAsync(reqData);
+
+    const users = await userService.getList({
+      emailid: req.body.emailid,
+      page_no,
+      page_size,
+      sort_by,
+      sort_order,
+      search,
+    });
+    return success.handler({ users }, req, res, next);
+  } catch (err) {
+    return error.handler(err, req, res, next);
+  }
+};
+
 module.exports = {
+  getListCount,
   addOne,
+  getList,
   getConfig,
 };
