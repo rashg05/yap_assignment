@@ -1,8 +1,9 @@
 /* eslint-disable no-shadow */
 const { error, success } = require("@yapsody/lib-handlers");
 const config = require("../config/user.config.json");
-const { addUserValidation, getListValidation, getId, recoveryParamsValidation } = require("../validations");
+const { addUserValidation, getListValidation, getId, recoveryParamsValidation, updateUserValidation } = require("../validations");
 const { userService } = require("../services");
+const { checkChanges } = require('@yapsody/lib-utils');
 const userModel = require("../models/user.model");
 const { UserModel } = require("../managers/sequelize.manager");
 
@@ -110,6 +111,61 @@ const deleteOne = async (req, res, next) => {
   }
 };
 
+const updateOne = async (req, res, next) => {
+  const { userId } = req.params;
+  const enableFlag = req.query.enable;
+  try {
+    const id = await getId.validateAsync(userId);
+    const {
+      firstname,
+      lastname,
+      emailid,
+      password,
+      enable,
+    } = await updateUserValidation.validateAsync({ ...req.body, enable: enableFlag });
+
+    if (enable === true) {
+      const item = await userService.enableOne({
+        id,
+      });
+
+      return success.handler({ user: item }, req, res, next);
+    }
+
+    if (enable === false) {
+      const item = await userService.disableOne({
+        id,
+      });
+      return success.handler({ user: item }, req, res, next);
+    }
+
+    let item = await userService.getOne({
+      id,
+    });
+
+    // eslint-disable-next-line no-unused-vars
+    const difference = checkChanges({
+      firstname,
+      lastname,
+      emailid,
+      password,
+    }, item);
+
+    item.firstname = firstname !== undefined ? firstname : item.firstname;
+    item.lastname = lastname !== undefined ? lastname : item.lastname;
+    item.emailid = emailid !== undefined ? emailid : item.emailid;
+    item.password = password !== undefined ? password : item.password;
+
+    item = await item.save();
+
+    // Send difference in event data. Difference will be the changes made in the resource
+    // eventUtils.publishEvent(EventTypes.GetAccountAddressesCount, req, { note, difference });
+    return success.handler({ note: item }, req, res, next);
+  } catch (err) {
+    return error.handler(err, req, res, next);
+  }
+};
+
 module.exports = {
   getListCount,
   addOne,
@@ -117,4 +173,5 @@ module.exports = {
   getConfig,
   getOne,
   deleteOne,
+  updateOne,
 };

@@ -5,7 +5,7 @@ const CANCEL = {
     recovery_param: {},
   };
   
-  const getDeleteRecoveryOptions = ({ noteId }, cancel = true) => {
+  const getDeleteRecoveryOptions = ({ userId }, cancel = true) => {
     const options = [
       {
         name: 'force',
@@ -13,7 +13,7 @@ const CANCEL = {
         is_default: 'false',
         recovery_param: {
           method: 'delete',
-          path: `/notes/${noteId}`,
+          path: `/users/${userId}`,
           params: 'force_update=true',
           body: '',
         },
