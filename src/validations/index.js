@@ -1,5 +1,5 @@
-const addUserValidation = require('./user.validation');
-const getListValidation = require('./user.validation');
+const addUserValidation = require('./add-user.validation');
+const getListValidation = require('./get-list.validation');
 const getId = require('./get-id.validation');
 
 module.exports = {
