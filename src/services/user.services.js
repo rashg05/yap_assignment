@@ -46,8 +46,25 @@ const getList = async ({
   });
 };
 
+const getOne = async ({ id }) => {
+  const where = {
+    id,
+  };
+
+  const item = await UserModel.findOne({
+    where
+  });
+
+  if (!item) {
+    return error.throwNotFound({ custom_key: 'NoteNotFound', item: 'User' });
+  }
+
+  return item;
+};
+
 module.exports = {
   addOne,
   getList,
   getListCount,
+  getOne,
 };

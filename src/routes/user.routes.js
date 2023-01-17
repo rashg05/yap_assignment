@@ -8,5 +8,6 @@ userRoutes.post("/", userController.addOne);
 userRoutes.get("/", userController.getList);
 userRoutes.get("/count", userController.getListCount);
 userRoutes.get("/display-settings/", userController.getConfig);
+userRoutes.get('/:userId/', userController.getOne);
 
 module.exports = userRoutes;
