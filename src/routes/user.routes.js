@@ -9,5 +9,6 @@ userRoutes.get("/", userController.getList);
 userRoutes.get("/count", userController.getListCount);
 userRoutes.get("/display-settings/", userController.getConfig);
 userRoutes.get('/:userId/', userController.getOne);
+userRoutes.delete('/:userId', userController.deleteOne);
 
 module.exports = userRoutes;

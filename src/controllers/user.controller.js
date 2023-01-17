@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow */
 const { error, success } = require("@yapsody/lib-handlers");
 const config = require("../config/user.config.json");
-const { addUserValidation, getListValidation, getId } = require("../validations");
+const { addUserValidation, getListValidation, getId, recoveryParamsValidation } = require("../validations");
 const { userService } = require("../services");
 const userModel = require("../models/user.model");
 const { UserModel } = require("../managers/sequelize.manager");
@@ -94,10 +94,27 @@ const getOne = async (req, res, next) => {
   }
 };
 
+const deleteOne = async (req, res, next) => {
+  const { userId } = req.params;
+  const { force_update } = req.query;
+  try {
+    await recoveryParamsValidation.validateAsync(force_update);
+    const id = await getId.validateAsync(userId);
+    const user = await userService.deleteOne({
+      id,
+      force_update,
+    });
+    return success.handler({ user }, req, res, next);
+  } catch (err) {
+    return error.handler(err, req, res, next);
+  }
+};
+
 module.exports = {
   getListCount,
   addOne,
   getList,
   getConfig,
   getOne,
+  deleteOne,
 };

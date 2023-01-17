@@ -1,11 +1,8 @@
-const { sequelizeManager } = require('../managers');
-
+const { sequelizeManager } = require("../managers");
+const { STATUS } = require('../consts');
 const { UserModel } = sequelizeManager;
 
-const getListCount = async ({
-   search,
-}) => {
-
+const getListCount = async ({ search }) => {
   if (search) {
     where.name = {
       [Op.like]: `%${search}%`,
@@ -15,18 +12,15 @@ const getListCount = async ({
   return UserModel.findAll({});
 };
 
-const addOne = async ({
-  firstname, lastname, emailid, password,
-}) => UserModel.create({
-  firstname,
-  lastname,
-  emailid,
-  password,
-});
+const addOne = async ({ firstname, lastname, emailid, password }) =>
+  UserModel.create({
+    firstname,
+    lastname,
+    emailid,
+    password,
+  });
 
-const getList = async ({
-  page_no, page_size, sort_by, sort_order, search,
-}) => {
+const getList = async ({ page_no, page_size, sort_by, sort_order, search }) => {
   const limit = page_size;
   const offset = (page_no - 1) * limit;
 
@@ -52,14 +46,36 @@ const getOne = async ({ id }) => {
   };
 
   const item = await UserModel.findOne({
-    where
+    where,
   });
 
   if (!item) {
-    return error.throwNotFound({ custom_key: 'NoteNotFound', item: 'User' });
+    return error.throwNotFound({ custom_key: "NoteNotFound", item: "User" });
   }
 
   return item;
+};
+
+const deleteOne = async ({ id, force_update }) => {
+  const item = await getOne({
+    id,
+  });
+
+  if (force_update) {
+    return item.destroy();
+  }
+
+  if (item.status === STATUS.ENABLED) {
+    return error.throwPreconditionFailed({
+      message: "Enabled user can't be deleted",
+      recovery: {
+        message: "do you want to force delete?",
+        options: getDeleteRecoveryOptions({ userId: id }, true),
+      },
+    });
+  }
+
+  return item.destroy();
 };
 
 module.exports = {
@@ -67,4 +83,5 @@ module.exports = {
   getList,
   getListCount,
   getOne,
+  deleteOne,
 };
