@@ -30,10 +30,6 @@ const getList = async ({
   const limit = page_size;
   const offset = (page_no - 1) * limit;
 
-  const where = {
-    emailid,
-  };
-
   if (search) {
     where.name = {
       [Op.like]: `%${search}%`,
@@ -44,7 +40,6 @@ const getList = async ({
   order.push([sort_by, sort_order]);
 
   return UserModel.findAll({
-    where,
     order,
     offset,
     limit,

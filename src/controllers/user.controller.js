@@ -61,10 +61,6 @@ const getConfig = async (req, res, next) =>
 
 const getList = async (req, res, next) => {
   const reqData = { ...req.query };
-  let id = req.params.id;
-  let user = await userModel.findOne({where: { id: id}});
-  res.status(200).send(user);
-
   if (reqData.ids) {
     reqData.ids = reqData.ids.split(";");
   }
@@ -73,7 +69,6 @@ const getList = async (req, res, next) => {
       await getListValidation.validateAsync(reqData);
 
     const users = await userService.getList({
-      emailid: req.body.emailid,
       page_no,
       page_size,
       sort_by,
