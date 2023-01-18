@@ -160,7 +160,7 @@ const updateOne = async (req, res, next) => {
 
     // Send difference in event data. Difference will be the changes made in the resource
     // eventUtils.publishEvent(EventTypes.GetAccountAddressesCount, req, { note, difference });
-    return success.handler({ note: item }, req, res, next);
+    return success.handler({ user: item }, req, res, next);
   } catch (err) {
     return error.handler(err, req, res, next);
   }
