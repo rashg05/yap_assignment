@@ -78,10 +78,38 @@ const deleteOne = async ({ id, force_update }) => {
   return item.destroy();
 };
 
+const enableOne = async ({ id }) => {
+  const item = await getOne({
+    id,
+  });
+
+  if (item.status !== STATUS.DISABLED) {
+    throw error.throwPreconditionFailed({ message: 'Only disabled user can be enabled' });
+  }
+
+  item.status = STATUS.ENABLED;
+  return item.save();
+};
+
+const disableOne = async ({ id }) => {
+  const item = await getOne({
+    id,
+  });
+
+  if (item.status !== STATUS.ENABLED) {
+    throw error.throwPreconditionFailed({ message: 'Only enabled user can be disabled' });
+  }
+
+  item.status = STATUS.DISABLED;
+  return item.save();
+};
+
 module.exports = {
   addOne,
   getList,
   getListCount,
   getOne,
   deleteOne,
+  enableOne,
+  disableOne,
 };
