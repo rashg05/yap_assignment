@@ -10,5 +10,7 @@ userRoutes.get("/count", userController.getListCount);
 userRoutes.get("/display-settings/", userController.getConfig);
 userRoutes.get('/:userId/', userController.getOne);
 userRoutes.delete('/:userId', userController.deleteOne);
+userRoutes.put('/:userId', userController.updateOne);
+// userRoutes.post('/:userId/postBlog', userController.copyUser);
 
 module.exports = userRoutes;
