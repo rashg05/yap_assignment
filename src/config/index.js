@@ -6,7 +6,7 @@ if (process.env.ENVIRONMENT === 'yap-local') {
   const config = {
     ENVIRONMENT: process.env.ENVIRONMENT || 'yap-local',
     MICROSERVICE_NAME: process.env.MICROSERVICE_NAME || 'crudjs-assignment',
-    MICROSERVICE_TYPE: process.env.MICROSERVICE_TYPE || 'com.yapsody.crudjs-assignment',
+    MICROSERVICE_TYPE: process.env.MICROSERVICE_TYPE || 'com.yapsody.crud-assignment',
     MICROSERVICE_IP: process.env.MICROSERVICE_IP || '0.0.0.0',
     APP_HOST: process.env.APP_HOST || '0.0.0.0',
     APP_PORT: process.env.APP_PORT || '8080',
