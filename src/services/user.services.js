@@ -1,6 +1,8 @@
 const { sequelizeManager } = require("../managers");
 const { STATUS } = require('../consts');
 const { UserModel } = sequelizeManager;
+const { error } = require('@yapsody/lib-handlers');
+const { recoveryOptionsUtils: { getDeleteRecoveryOptions } } = require('../utils');
 
 const getListCount = async ({ search }) => {
   if (search) {
@@ -50,7 +52,7 @@ const getOne = async ({ id }) => {
   });
 
   if (!item) {
-    return error.throwNotFound({ custom_key: "NoteNotFound", item: "User" });
+    return error.throwNotFound({ custom_key: "UserNotFound", item: "User" });
   }
 
   return item;

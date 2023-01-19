@@ -1,12 +1,14 @@
 const express = require('express');
 const { error } = require('@yapsody/lib-handlers');
 
-// eslint-disable-next-line new-cap
+
 const apiRoutes = express.Router();
 
 const userRoutes = require('./user.routes');
+const postsRoutes = require('./posts.routes');
 
 apiRoutes.use('/users', [userRoutes]);
+apiRoutes.use('/posts', [postsRoutes]);
 
 apiRoutes.use('*', () => error.throwNotFound({ item: 'Route' }));
 
