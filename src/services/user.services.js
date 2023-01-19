@@ -1,3 +1,4 @@
+const { error } = require('@yapsody/lib-handlers');
 const { sequelizeManager } = require("../managers");
 const { STATUS } = require('../consts');
 const { UserModel } = sequelizeManager;
