@@ -49,16 +49,14 @@ const getAllPosts = async ({
   return posts;
 };
 
-const getPostById = async ({ userId, postId }) => {
+const getPostById = async ({ userId, id }) => {
   const where = {
     user_id: userId,
-    postId,
+    id,
   };
 
   const item = await PostsModel.findOne({
-    where: {
-      postId,
-    }
+    where,
   });
 
   if (!item) {

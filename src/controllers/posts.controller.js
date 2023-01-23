@@ -59,16 +59,16 @@ const getAllPosts = async (req, res, next) => {
 
 const getPostById = async (req, res, next) => {
   const { user_id } = req.params;
-  const { id } = req.params;
+  const { post_id } = req.params;
   console.log(user_id, "---------->");
-  console.log(id, "------->");
+  console.log(post_id, "------->");
   try {
     const userId = await getId.validateAsync(user_id);
     await userService.getOne({ id: user_id });
-    const postId = await getId.validateAsync(id);
+    const id = await getId.validateAsync(post_id);
     const posts = await postsService.getPostById({
       userId,
-      postId,
+      id,
     });
     return success.handler({ posts }, req, res, next);
   } catch (err) {
