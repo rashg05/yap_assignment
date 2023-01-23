@@ -4,6 +4,7 @@ const {
   addPostsValidation,
   getListValidation,
   getId,
+  recoveryParamsValidation,
 } = require("../validations");
 
 const addPosts = async (req, res, next) => {
@@ -76,8 +77,32 @@ const getPostById = async (req, res, next) => {
   }
 };
 
+const deleteOnePost = async (req, res, next) => {
+  const { user_id } = req.params;
+  const { post_id } = req.params;
+  const { force_update } = req.query;
+  console.log(user_id, "---------->");
+  console.log(post_id, "------->");
+  try {
+    await recoveryParamsValidation.validateAsync(force_update);
+    const userId = await getId.validateAsync(user_id);
+    await userService.getOne({ id: user_id });
+    const id = await getId.validateAsync(post_id);
+    const post = await postsService.deleteOnePost({
+      userId,
+      id,
+      force_update,
+    });
+    return success.handler({ post }, req, res, next);
+  } catch (err) {
+    return error.handler(err, req, res, next);
+  }
+};
+
+
 module.exports = {
   addPosts,
   getAllPosts,
   getPostById,
+  deleteOnePost,
 };

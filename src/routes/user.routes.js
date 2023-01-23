@@ -12,7 +12,6 @@ userRoutes.get("/display-settings/", userController.getConfig);
 userRoutes.get('/:userId/', userController.getOne);
 userRoutes.delete('/:userId', userController.deleteOne);
 userRoutes.put('/:userId', userController.updateOne);
-userRoutes.get('/getUserPosts', userController.getUserPosts);
 userRoutes.use('/:user_id/posts', postsRoutes);
 
 module.exports = userRoutes;
