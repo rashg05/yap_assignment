@@ -2,7 +2,6 @@ const { error } = require('@yapsody/lib-handlers');
 const { sequelizeManager } = require("../managers");
 const { STATUS } = require('../consts');
 const { UserModel } = sequelizeManager;
-const { error } = require('@yapsody/lib-handlers');
 const { recoveryOptionsUtils: { getDeleteRecoveryOptions } } = require('../utils');
 const { PostsModel } = require("../managers/sequelize.manager");
 
