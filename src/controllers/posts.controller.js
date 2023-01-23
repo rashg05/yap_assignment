@@ -5,7 +5,10 @@ const {
   getListValidation,
   getId,
   recoveryParamsValidation,
+  updatePostValidation,
 } = require("../validations");
+const { checkChanges } = require('@yapsody/lib-utils');
+
 
 const addPosts = async (req, res, next) => {
   const { user_id } = req.params;
@@ -99,10 +102,68 @@ const deleteOnePost = async (req, res, next) => {
   }
 };
 
+const updateOnePost = async (req, res, next) => {
+  const { user_id } = req.params;
+  const { post_id } = req.params;
+  const enableFlag = req.query.enable;
+  console.log(user_id, "---------->");
+  console.log(post_id, "------->");
+  try {
+    const userId = await getId.validateAsync(user_id);
+    await userService.getOne({ id: user_id });
+    const id = await getId.validateAsync(post_id);
+    const { title, description, enable } =
+      await updatePostValidation.validateAsync({
+        ...req.body,
+        enable: enableFlag,
+      });
+
+    if (enable === true) {
+      const item = await postsService.enableOnePost({
+        userId,
+        id,
+      });
+
+      return success.handler({ post: item }, req, res, next);
+    }
+
+    if (enable === false) {
+      const item = await postsService.disableOnePost({
+        userId,
+        id,
+      });
+      return success.handler({ post: item }, req, res, next);
+    }
+
+    let item = await postsService.getPostById({
+      userId,
+      id,
+    });
+
+    // eslint-disable-next-line no-unused-vars
+    const difference = checkChanges(
+      {
+       title,
+       description,
+      },
+      item
+    );
+
+    item.title = title !== undefined ? title : item.title;
+    item.description = description !== undefined ? description : item.description;
+
+    item = await item.save();
+
+    return success.handler({ post: item }, req, res, next);
+  } catch (err) {
+    return error.handler(err, req, res, next);
+  }
+};
 
 module.exports = {
   addPosts,
   getAllPosts,
   getPostById,
   deleteOnePost,
+  updateOnePost,
 };

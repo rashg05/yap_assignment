@@ -79,7 +79,7 @@ const deleteOnePost = async ({ userId, id, force_update }) => {
 
   if (item.status === STATUS.ENABLED) {
     return error.throwPreconditionFailed({
-      message: "Enabled user can't be deleted",
+      message: "Enabled post can't be deleted",
       recovery: {
         message: "do you want to force delete?",
         options: getDeleteRecoveryOptions({ post_id: id }, true),
@@ -90,9 +90,39 @@ const deleteOnePost = async ({ userId, id, force_update }) => {
   return item.destroy();
 };
 
+const enableOnePost = async ({ userId, id }) => {
+  const item = await getPostById({
+    userId,
+    id,
+  });
+
+  if (item.status !== STATUS.DISABLED) {
+    throw error.throwPreconditionFailed({ message: 'Only disabled post can be enabled' });
+  }
+
+  item.status = STATUS.ENABLED;
+  return item.save();
+};
+
+const disableOnePost = async ({ userId, id }) => {
+  const item = await getPostById({
+    userId,
+    id,
+  });
+
+  if (item.status !== STATUS.ENABLED) {
+    throw error.throwPreconditionFailed({ message: 'Only enabled post can be disabled' });
+  }
+
+  item.status = STATUS.DISABLED;
+  return item.save();
+};
+
 module.exports = {
   addPosts,
   getAllPosts,
   getPostById,
   deleteOnePost,
+  enableOnePost,
+  disableOnePost,
 };

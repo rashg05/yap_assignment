@@ -4,6 +4,7 @@ const getId = require('./get-id.validation');
 const recoveryParamsValidation = require('./recovery-params.validations');
 const updateUserValidation = require('./update-user.validation');
 const addPostsValidation = require('./add-posts.validation');
+const updatePostValidation = require('./update-posts.validation');
 
 module.exports = {
   addUserValidation,
@@ -12,4 +13,5 @@ module.exports = {
   recoveryParamsValidation,
   updateUserValidation,
   addPostsValidation,
+  updatePostValidation,
 };
