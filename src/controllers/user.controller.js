@@ -158,13 +158,27 @@ const updateOne = async (req, res, next) => {
 
     item = await item.save();
 
-    // Send difference in event data. Difference will be the changes made in the resource
-    // eventUtils.publishEvent(EventTypes.GetAccountAddressesCount, req, { note, difference });
     return success.handler({ user: item }, req, res, next);
   } catch (err) {
     return error.handler(err, req, res, next);
   }
 };
+
+//connect one to many relation between user and posts
+const getUserPosts = async (req, res) => {
+  if (reqData.ids) {
+    reqData.ids = reqData.ids.split(";");
+  }
+  try {
+    const { id } = await getId.validateAsync(req.Data);
+    const data = await userService.getUserPosts({
+      id,
+    });
+    return success.handler({ data }, req, res, next);
+  } catch (err) {
+    return error.handler(err, req, res, next);
+  }
+}
 
 module.exports = {
   getListCount,
@@ -174,4 +188,5 @@ module.exports = {
   getOne,
   deleteOne,
   updateOne,
+  getUserPosts,
 };

@@ -1,14 +1,16 @@
 const { sequelizeManager } = require("../managers");
 const { PostsModel } = sequelizeManager;
-const { error } = require('@yapsody/lib-handlers');
+const { error } = require("@yapsody/lib-handlers");
+const { posts } = require("../models");
 
-
-const addPosts = async ({ title, description, user_id }) =>
-  PostsModel.create({
+const addPosts = async ({ title, description, userId }) => {
+  const post = await PostsModel.create({
     title,
     description,
-    user_id,
+    user_id: userId,
   });
+  return post;
+};
 
 const getAllPosts = async ({
   page_no,
@@ -16,37 +18,51 @@ const getAllPosts = async ({
   sort_by,
   sort_order,
   search,
+  userId,
 }) => {
   const limit = page_size;
   const offset = (page_no - 1) * limit;
 
-  if (search) {
-    where.user_id = {
-      [Op.like]: `%${search}%`,
-    };
-  }
+  // const id = await PostsModel.findOne({
+  //   where: {
+  //     user_id: userId,
+  //   },
+  // });
+
+  // if (search) {
+  //   where.id = {
+  //     [Op.like]: `%${search}%`,
+  //   };
+  // }
 
   const order = [];
   order.push([sort_by, sort_order]);
-
-  return PostsModel.findAll({
+  const posts = await PostsModel.findAll({
     order,
     offset,
     limit,
+    where: {
+      user_id: userId,
+    },
   });
+
+  return posts;
 };
 
-const getPostById = async ({ id }) => {
+const getPostById = async ({ userId, postId }) => {
   const where = {
-    id,
+    user_id: userId,
+    postId,
   };
 
   const item = await PostsModel.findOne({
-    where,
+    where: {
+      postId,
+    }
   });
 
   if (!item) {
-    return error.throwNotFound({ custom_key: "DataNotFound", item: "user_id" });
+    return error.throwNotFound({ custom_key: "DataNotFound", item: "postId" });
   }
   return item;
 };

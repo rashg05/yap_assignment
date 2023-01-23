@@ -1,5 +1,5 @@
 const { error, success } = require("@yapsody/lib-handlers");
-const { postsService } = require("../services");
+const { postsService, userService } = require("../services");
 const {
   addPostsValidation,
   getListValidation,
@@ -7,10 +7,15 @@ const {
 } = require("../validations");
 
 const addPosts = async (req, res, next) => {
+  const { user_id } = req.params;
+  console.log(user_id, "---------->");
   try {
-    const { title, description, user_id } =
-      await addPostsValidation.validateAsync(req.body);
-    const post = await postsService.addPosts({ title, description, user_id });
+    const { title, description } = await addPostsValidation.validateAsync(
+      req.body
+    );
+    const userId = await getId.validateAsync(user_id);
+    await userService.getOne({ id: user_id });
+    const post = await postsService.addPosts({ userId, title, description });
     return success.handler({ post }, req, res, next);
   } catch (err) {
     switch (err.user_id) {
@@ -26,6 +31,8 @@ const addPosts = async (req, res, next) => {
 };
 
 const getAllPosts = async (req, res, next) => {
+  const { user_id } = req.params;
+  console.log(user_id, "---------->");
   const reqData = { ...req.query };
   if (reqData.ids) {
     reqData.ids = reqData.ids.split(";");
@@ -33,8 +40,11 @@ const getAllPosts = async (req, res, next) => {
   try {
     const { page_no, page_size, sort_by, sort_order, search } =
       await getListValidation.validateAsync(reqData);
+    const userId = await getId.validateAsync(user_id);
+    await userService.getOne({ id: user_id });
 
     const posts = await postsService.getAllPosts({
+      userId,
       page_no,
       page_size,
       sort_by,
@@ -49,11 +59,16 @@ const getAllPosts = async (req, res, next) => {
 
 const getPostById = async (req, res, next) => {
   const { user_id } = req.params;
+  const { id } = req.params;
+  console.log(user_id, "---------->");
+  console.log(id, "------->");
   try {
-    console.log(user_id, "------------->");
-    const id = await getId.validateAsync(user_id);
+    const userId = await getId.validateAsync(user_id);
+    await userService.getOne({ id: user_id });
+    const postId = await getId.validateAsync(id);
     const posts = await postsService.getPostById({
-      id
+      userId,
+      postId,
     });
     return success.handler({ posts }, req, res, next);
   } catch (err) {
