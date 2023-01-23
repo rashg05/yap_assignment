@@ -2,8 +2,8 @@ const { error } = require('@yapsody/lib-handlers');
 const { sequelizeManager } = require("../managers");
 const { STATUS } = require('../consts');
 const { UserModel } = sequelizeManager;
-const { error } = require('@yapsody/lib-handlers');
 const { recoveryOptionsUtils: { getDeleteRecoveryOptions } } = require('../utils');
+const { PostsModel } = require("../managers/sequelize.manager");
 
 const getListCount = async ({ search }) => {
   if (search) {
@@ -107,6 +107,21 @@ const disableOne = async ({ id }) => {
   return item.save();
 };
 
+//connect one to many relation between user and posts
+const getUserPosts = async ({ id }) => {
+  if (id) {
+    where.id = {
+      [Op.like]: `%${id}%`,
+    };
+  const data =  await UserModel.findAll({
+    include: [{
+      model: PostsModel
+    }],
+    })
+  }
+  return data;
+}
+
 module.exports = {
   addOne,
   getList,
@@ -115,4 +130,5 @@ module.exports = {
   deleteOne,
   enableOne,
   disableOne,
+  getUserPosts,
 };

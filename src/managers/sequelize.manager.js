@@ -25,7 +25,7 @@ const sequelize = new Sequelize(config.MYSQL_DB_NAME, config.MYSQL_USERNAME, con
 const UserModel = user(sequelize, Sequelize);
 const PostsModel = posts(sequelize, Sequelize);
 
-UserModel.hasMany(PostsModel, { foreignKey: 'user_id' });
+UserModel.hasMany(PostsModel, { foreignKey: 'user_id'});
 PostsModel.belongsTo(UserModel, { foreignKey: 'user_id' });
 
 module.exports = {

@@ -8,7 +8,6 @@ const userRoutes = require('./user.routes');
 const postsRoutes = require('./posts.routes');
 
 apiRoutes.use('/users', [userRoutes]);
-apiRoutes.use('/posts', [postsRoutes]);
 
 apiRoutes.use('*', () => error.throwNotFound({ item: 'Route' }));
 
