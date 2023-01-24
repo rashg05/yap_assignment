@@ -6,6 +6,7 @@ const updateUserValidation = require('./update-user.validation');
 const addPostsValidation = require('./add-posts.validation');
 const updatePostValidation = require('./update-posts.validation');
 const addCommentsValidation = require('./add-comments.validation');
+const updateCommentValidation = require('./update-comments.validation');
 
 module.exports = {
   addUserValidation,
@@ -16,4 +17,5 @@ module.exports = {
   addPostsValidation,
   updatePostValidation,
   addCommentsValidation,
+  updateCommentValidation,
 };
