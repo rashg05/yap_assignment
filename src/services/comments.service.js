@@ -83,9 +83,41 @@ const deleteOneComment = async ({ userId, postId, id, force_update }) => {
   return item.destroy();
 };
 
+const enableOneComment = async ({ userId, postId, id }) => {
+    const item = await getCommentById({
+      userId,
+      postId,
+      id,
+    });
+  
+    if (item.status !== STATUS.DISABLED) {
+      throw error.throwPreconditionFailed({ message: 'Only disabled comment can be enabled' });
+    }
+  
+    item.status = STATUS.ENABLED;
+    return item.save();
+  };
+  
+  const disableOneComment = async ({ userId, postId, id }) => {
+    const item = await getCommentById({
+      userId,
+      postId,
+      id,
+    });
+  
+    if (item.status !== STATUS.ENABLED) {
+      throw error.throwPreconditionFailed({ message: 'Only enabled comment can be disabled' });
+    }
+  
+    item.status = STATUS.DISABLED;
+    return item.save();
+  };
+
 module.exports = {
   addComments,
   getCommentsList,
   getCommentById,
   deleteOneComment,
+  enableOneComment,
+  disableOneComment,
 };
