@@ -3,6 +3,7 @@ const {
   addCommentsValidation,
   getId,
   getListValidation,
+  recoveryParamsValidation,
 } = require("../validations");
 const { error, success } = require("@yapsody/lib-handlers");
 
@@ -80,12 +81,38 @@ const getCommentById = async (req, res, next) => {
     await postsService.getPostById({ userId, id: post_id });
 
     const id = await getId.validateAsync(comment_id);
-    const comments = await commentsService.getCommentById({
+    const comment = await commentsService.getCommentById({
       userId,
       postId,
       id,
     });
-    return success.handler({ comments }, req, res, next);
+    return success.handler({ comment }, req, res, next);
+  } catch (err) {
+    return error.handler(err, req, res, next);
+  }
+};
+
+const deleteOneComment = async (req, res, next) => {
+  const { user_id } = req.params;
+  const { post_id } = req.params;
+  const { comment_id } = req.params;
+  const { force_update } = req.query;
+  console.log(user_id, "---------->");
+  console.log(post_id, "---------->");
+  try {
+    await recoveryParamsValidation.validateAsync(force_update);
+    const userId = await getId.validateAsync(user_id);
+    await userService.getOne({ id: user_id });
+    const postId = await getId.validateAsync(post_id);
+    await postsService.getPostById({userId, id: post_id});
+    const id = await getId.validateAsync(comment_id);
+    const comment = await commentsService.deleteOneComment({
+      userId,
+      postId,
+      id,
+      force_update,
+    });
+    return success.handler({ comment }, req, res, next);
   } catch (err) {
     return error.handler(err, req, res, next);
   }
@@ -95,4 +122,5 @@ module.exports = {
   addComments,
   getCommentsList,
   getCommentById,
+  deleteOneComment,
 };
