@@ -16,7 +16,6 @@ const getCommentsList = async ({
     page_size,
     sort_by,
     sort_order,
-    search,
     userId,
     postId,
   }) => {
@@ -38,7 +37,25 @@ const getCommentsList = async ({
     return comments;
   };
 
+  const getCommentById = async ({ userId, postId, id }) => {
+    const where = {
+      user_id: userId,
+      post_id: postId,
+      id,
+    };
+
+    const item = await CommentsModel.findOne({
+      where,
+    });
+  
+    if (!item) {
+      return error.throwNotFound({ custom_key: "DataNotFound", item: "commentId" });
+    }
+    return item;
+  };
+
 module.exports = {
   addComments,
   getCommentsList,
+  getCommentById,
 };
