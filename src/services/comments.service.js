@@ -43,7 +43,7 @@ const getCommentsList = async ({
       post_id: postId,
       id,
     };
-  
+
     const item = await CommentsModel.findOne({
       where,
     });
