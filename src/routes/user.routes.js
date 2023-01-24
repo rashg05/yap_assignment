@@ -2,7 +2,6 @@ const express = require("express");
 const { userController } = require("../controllers");
 const postsRoutes = require('./posts.routes');
 
-
 const userRoutes = express.Router({});
 
 userRoutes.post("/", userController.addOne);
