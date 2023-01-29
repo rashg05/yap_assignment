@@ -1,5 +1,5 @@
 const { sequelizeManager } = require("../managers");
-const { PostsModel } = sequelizeManager;
+const { PostsModel, CommentsModel } = sequelizeManager;
 const { error } = require("@yapsody/lib-handlers");
 const { posts } = require("../models");
 const { STATUS } = require('../consts');
@@ -59,6 +59,7 @@ const getPostById = async ({ userId, id }) => {
 
   const item = await PostsModel.findOne({
     where,
+    include: {model: CommentsModel}
   });
 
   if (!item) {
