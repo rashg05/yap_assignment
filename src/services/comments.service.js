@@ -1,7 +1,8 @@
 const { sequelizeManager } = require("../managers");
 const { CommentsModel } = sequelizeManager;
 const { comments } = require("../models");
-const { STATUS } = require('../consts');
+const { STATUS } = require("../consts");
+const { error } = require("@yapsody/lib-handlers");
 
 
 const addComments = async ({ comment, userId, postId }) => {
@@ -83,35 +84,47 @@ const deleteOneComment = async ({ userId, postId, id, force_update }) => {
   return item.destroy();
 };
 
-const enableOneComment = async ({ userId, postId, id }) => {
-    const item = await getCommentById({
-      userId,
-      postId,
-      id,
+const enableOneComment = async ({ userId, postId, id, reply }) => {
+  const item = await getCommentById({
+    userId,
+    postId,
+    id,
+  });
+  if (item.status !== STATUS.DISABLED) {
+    throw error.throwPreconditionFailed({
+      message: "Only disabled comment can be enabled",
     });
+  }
+  if (reply) {
+    item.reply = reply;
+    item.parent_id = id;
+  }
+
+  item.status = STATUS.ENABLED;
+  console.log(item, "==>");
+  return item.save();
   
-    if (item.status !== STATUS.DISABLED) {
-      throw error.throwPreconditionFailed({ message: 'Only disabled comment can be enabled' });
-    }
+};
+
+const disableOneComment = async ({ userId, postId, id, reply }) => {
+  const item = await getCommentById({
+    userId,
+    postId,
+    id,
+  });
   
-    item.status = STATUS.ENABLED;
-    return item.save();
-  };
-  
-  const disableOneComment = async ({ userId, postId, id }) => {
-    const item = await getCommentById({
-      userId,
-      postId,
-      id,
+  if (item.status !== STATUS.ENABLED) {
+    throw error.throwPreconditionFailed({
+      message: "Only enabled comment can be disabled",
     });
-  
-    if (item.status !== STATUS.ENABLED) {
-      throw error.throwPreconditionFailed({ message: 'Only enabled comment can be disabled' });
-    }
-  
-    item.status = STATUS.DISABLED;
-    return item.save();
-  };
+  }
+  if (reply) {
+    item.parent_id = id;
+  }
+
+  item.status = STATUS.DISABLED;
+  return item.save();
+};
 
 module.exports = {
   addComments,

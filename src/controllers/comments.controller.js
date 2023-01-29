@@ -7,7 +7,7 @@ const {
   updateCommentValidation,
 } = require("../validations");
 const { error, success } = require("@yapsody/lib-handlers");
-const { checkChanges } = require('@yapsody/lib-utils');
+const { checkChanges } = require("@yapsody/lib-utils");
 
 const addComments = async (req, res, next) => {
   const { user_id } = req.params;
@@ -106,7 +106,7 @@ const deleteOneComment = async (req, res, next) => {
     const userId = await getId.validateAsync(user_id);
     await userService.getOne({ id: user_id });
     const postId = await getId.validateAsync(post_id);
-    await postsService.getPostById({userId, id: post_id});
+    await postsService.getPostById({ userId, id: post_id });
     const id = await getId.validateAsync(comment_id);
     const comment = await commentsService.deleteOneComment({
       userId,
@@ -121,68 +121,69 @@ const deleteOneComment = async (req, res, next) => {
 };
 
 const updateOneComment = async (req, res, next) => {
-    const { user_id } = req.params;
-    const { post_id } = req.params;
-    const { comment_id }  = req.params;
-    const enableFlag = req.query.enable;
-    console.log(user_id, "---------->");
-    console.log(post_id, "------->");
-    console.log(comment_id, "-------->");
-    try {
-      const userId = await getId.validateAsync(user_id);
-      await userService.getOne({ id: user_id });
-      const postId = await getId.validateAsync(post_id);
-      await postsService.getPostById({ userId, id: post_id });
+  const { user_id, post_id, comment_id } = req.params;
+  const enableFlag = req.query.enable;
+  console.log(user_id, "---------->");
+  console.log(post_id, "------->");
+  console.log(comment_id, "-------->");
+  try {
+    const userId = await getId.validateAsync(user_id);
+    await userService.getOne({ id: user_id });
+    const postId = await getId.validateAsync(post_id);
+    await postsService.getPostById({ userId, id: post_id });
 
-      const id = await getId.validateAsync(comment_id);
-      const { comment, enable } =
-        await updateCommentValidation.validateAsync({
-          ...req.body,
-          enable: enableFlag,
-        });
-  
-      if (enable === true) {
-        const item = await commentsService.enableOneComment({
-          userId,
-          postId,
-          id,
-        });
-  
-        return success.handler({ comment: item }, req, res, next);
-      }
-  
-      if (enable === false) {
-        const item = await commentsService.disableOneComment({
-          userId,
-          postId,
-          id,
-        });
-        return success.handler({ comment: item }, req, res, next);
-      }
-  
-      let item = await commentsService.getCommentById({
+    const id = await getId.validateAsync(comment_id);
+    const { comment, enable, reply } =
+      await updateCommentValidation.validateAsync({
+        ...req.body,
+        enable: enableFlag,
+      });
+
+    if (enable === true && reply) {
+      console.log(reply, "---->");
+      const item = await commentsService.enableOneComment({
         userId,
         postId,
         id,
+        reply,
       });
-  
-      // eslint-disable-next-line no-unused-vars
-      const difference = checkChanges(
-        {
-         comment,
-        },
-        item
-      );
-  
-      item.comment = comment !== undefined ? comment : item.comment;
-  
-      item = await item.save();
-  
+
       return success.handler({ comment: item }, req, res, next);
-    } catch (err) {
-      return error.handler(err, req, res, next);
     }
-  };
+
+    if (enable === false && reply) {
+      const item = await commentsService.disableOneComment({
+        userId,
+        postId,
+        id,
+        reply,
+      });
+      return success.handler({ comment: item }, req, res, next);
+    }
+
+    let item = await commentsService.getCommentById({
+      userId,
+      postId,
+      id,
+    });
+
+    // eslint-disable-next-line no-unused-vars
+    const difference = checkChanges(
+      {
+        comment,
+      },
+      item
+    );
+
+    item.comment = comment !== undefined ? comment : item.comment;
+
+    item = await item.save();
+
+    return success.handler({ comment: item }, req, res, next);
+  } catch (err) {
+    return error.handler(err, req, res, next);
+  }
+};
 
 module.exports = {
   addComments,
@@ -190,4 +191,5 @@ module.exports = {
   getCommentById,
   deleteOneComment,
   updateOneComment,
+  // replyOnComment,
 };

@@ -8,5 +8,14 @@ module.exports = (sequelize, Sequelize) =>
     },
     post_id: {
         type: Sequelize.STRING(255),
-    }
+    },
+    reply: {
+      type: Sequelize.STRING(255),
+    },
+    parent_id: {
+      type: Sequelize.STRING(255),
+    },
+    status: {
+      type: Sequelize.INTEGER,
+    },
   });
