@@ -101,7 +101,7 @@ const enableOneComment = async ({ userId, postId, id, reply }) => {
   }
 
   item.status = STATUS.ENABLED;
-  console.log(item, "==>");
+  console.log(item.reply, "==>");
   return item.save();
   
 };

@@ -23,6 +23,7 @@
     "@yapsody/lib-handlers": "^1.0.56",
     "@yapsody/lib-utils": "^1.0.27",
     "@yapsody/lib-validations": "^2.0.10",
+    "axios": "^1.2.6",
     "compression": "^1.7.4",
     "config": "^3.3.9",
     "cors": "^2.8.5",
